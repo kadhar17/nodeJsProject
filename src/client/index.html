@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Demo</title>
+	<style type="text/css">
+		input
+		{
+			margin-bottom: 15px;
+		}
+		#container
+		{
+			position: absolute;
+			top:200px;
+			left: 400px;
+		}
+	</style>
+	<script src="libs/jquery-2.1.3.min.js"></script>
+	<script type="text/javascript">
+		var serverUrl = "http://localhost:8030";
+		//var serverUrl = "//192.168.3.127:8030"
+		function init()
+		{
+			$("#add").bind("click",function()
+			{
+				$.ajax({
+		            type: "get",
+		            url: serverUrl + "/add",
+		            accepts: "application/json",
+		            dataType: 'json',
+		            data: {
+		                "id":$("#uid").val(),
+		                "name":$("#name").val(),
+		                "phoneNo":$("#phone").val()
+		            },
+		            success: function(data) {
+		            	alert(data.response);
+		            }
+				});
+			});
+
+			$("#fetch").bind("click",function()
+			{
+				$.ajax({
+		            type: "get",
+		            url: serverUrl + "/fetch",
+		            accepts: "application/json",
+		            dataType: 'json',
+		            data: {
+		                "id":$("#uid").val()
+		            },
+		            success: function(data) {
+		         
+		                $("#name").val(data[0].name);
+   		                $("#phone").val(data[0].phoneNo);
+		            }
+				});
+			});
+				
+
+			$("#update").bind("click",function()
+			{
+				$.ajax({
+		            type: "post",
+		            url: serverUrl + "/update",
+		            accepts: "application/json",
+		            dataType: 'json',
+		            data: {
+		                "id":$("#uid").val(),
+		                "name":$("#name").val(),
+		                "phoneNo":$("#phone").val()
+		            },
+		            success: function(data) {
+		         
+		                alert(data.response);
+		            }
+				});
+			});	
+		}
+	</script>
+</head>
+<body onload="init()">
+	<div id="container">
+		<input type="text" class="" id="uid">
+		<br>
+		<input type="text" class="" id="name">
+		<br>
+		<input type="text" class="" id="phone">
+		<br>
+		<button id="add" >Add</button>
+		<button id="update" >Update</button>
+		<button id="fetch" >Fetch</button>
+	</div>
+</body>
+</html>

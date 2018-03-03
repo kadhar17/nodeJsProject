@@ -1,12 +1,12 @@
 "use strict";
 
 var express = require('express');
-var app = express();
+var appexp = express();
 var qs = require('querystring');
 var url = require("url");
 var mysql =  require('mysql');
 
-app.use(function(req, res, next) {
+appexp.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "*");
   res.header("Access-Control-Allow-Headers", "Content-Type");
@@ -20,9 +20,9 @@ sqlProcess.prototype.sqlTest = function(data,mode,callback){
     // First you need to create a connection to the db
     var res =  null;
     var con = mysql.createConnection({
-      host     : '127.0.0.1',
+      host     : 'localhost',
       user     : 'root',
-      password : 'admin',
+      password : 'root',
       database : 'testing'
     });
     //
@@ -47,10 +47,11 @@ sqlProcess.prototype.sqlTest = function(data,mode,callback){
     //
     if(mode == "update")
     {
+      console.log("update");
       var queryUpdate = 'UPDATE userinfo SET PhoneNo = "'+data.phoneNo+'", name = "'+data.name+'" WHERE id = "'+data.id+'"';
       con.query(queryUpdate,function(err,rows){
 
-        if(err) throw err;
+        if(err) throw err="error";
         res = rows;
       });
     }
@@ -64,6 +65,27 @@ sqlProcess.prototype.sqlTest = function(data,mode,callback){
       });
     }
     //
+     //
+     if(mode == "delete")
+     {
+       console.log("delete");
+       var queryDelete = 'DELETE FROM userinfo WHERE id = "'+data.id+'"';
+       con.query(queryDelete,function(err,rows){
+         if(err) throw err="error";
+          res = rows;
+       });
+     }
+
+     if(mode == "list")
+     {
+       console.log("list");
+       var queryDelete = 'select * from userinfo';
+       con.query(queryDelete,function(err,rows){
+         if(err) throw err="error";
+          res = rows;
+       });
+     }
+     //
     con.end(function(err) {
       callback(res);
     });
@@ -73,9 +95,9 @@ var processData = new sqlProcess();
 
 
 
-app.get('/add', function (request, response) {
+appexp.get('/add', function (request, response) {
     var queryData = url.parse(request.url, true).query;
-   // console.log(queryData);
+   console.log(queryData);
     processData.sqlTest(queryData,"add",function(data,xml)
     {
        response.writeHead(200, {"Content-Type": "text/plain"});
@@ -83,7 +105,7 @@ app.get('/add', function (request, response) {
     });
 });
 
-app.get('/update', function (request, response) {
+appexp.get('/update', function (request, response) {
     var queryData = url.parse(request.url, true).query;
     processData.sqlTest(queryData,"update",function(data,xml)
     {
@@ -92,7 +114,7 @@ app.get('/update', function (request, response) {
     });
 });
 
-app.get('/fetch', function (request, response) {
+appexp.get('/fetch', function (request, response) {
     var queryData = url.parse(request.url, true).query;
      processData.sqlTest(queryData,"fetch",function(data,xml)
     {
@@ -101,7 +123,26 @@ app.get('/fetch', function (request, response) {
     });
 });
 
-var server = app.listen(8030, function () {
+appexp.get('/delete', function (request, response) {
+  var queryData = url.parse(request.url, true).query;
+   processData.sqlTest(queryData,"delete",function(data,xml)
+  {
+     response.writeHead(200, {"Content-Type": "text/plain"});
+     response.end(JSON.stringify({"response":"Data Removed"}));
+  });
+});
+
+appexp.get('/list', function (request, response) {
+  var queryData = url.parse(request.url, true).query;
+   processData.sqlTest(queryData,"list",function(data,xml)
+  {
+     response.writeHead(200, {"Content-Type": "text/plain"});
+     response.end(JSON.stringify(data));
+  });
+});
+
+
+var server = appexp.listen(8030, function () {
 
   var host = server.address().address;
   var port = server.address().port;

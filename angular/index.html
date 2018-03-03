@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html ng-app="myapp">
+
+<head>
+	<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+	<title>AngularJs Demo</title>
+	<script src="libs/angular.js"></script>
+	<script src="js/app.js"></script>
+	<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+	<div id="container" ng-controller="mycontroller">
+		<div>
+			<label>Name:</label><br>
+			<input type="text" class="" ng-model="name" ng-change="name = name.toUpperCase()"><br>
+			
+			<label>Age:</label><br>
+			<input type="number" class="" ng-model="age"><br>
+			
+			<label>Mobile:</label> <br>
+			<input type="number" class="" ng-model="phone"><br>
+			
+			<label>DOJ:</label> <br>
+			<input type="date" class="" ng-model="doj"><br>
+			 
+			<label>Designation:</label><br>
+			<input type="text" class="" ng-model="desg"><br>
+			 
+			<label>Photo:</label><br>
+			<input type="file" class="" ng-model="photo" accept="image/*"><br>
+			<hr>
+		</div>
+		
+		<div align="center">
+		<button ng-disabled="currState=='fetch'" id="add" ng-click="add()">Add</button>
+		<button ng-disabled="currState==''" id="update" ng-click="update()">Update</button>
+		<button ng-disabled="currState==''" id="delete" ng-click="delete()">Delete</button>
+		<button id="fetch" ng-click="fetch()">Fetch</button>
+	</div>
+		
+		
+		<hr>
+		<div align="center">
+			<button ng-show="!userlist" id="show" ng-click="list()">User List</button>
+			<button ng-show="userlist" id="hide" ng-click="hidelist()">Hide List</button>
+		</div>
+		
+		<div align="center" class="result" ng-show="userdata.length>0 && userlist">
+			<table>
+				<tbody>
+					<th>Id</th>
+					<th>Name</th>
+					<th>Age</th>
+					<th>Mobile No</th>
+					<th>DOJ</th>
+					<th>Designation</th>
+					<th>Photo</th>
+					<tr ng-repeat="x in userdata">
+						<td>{{x.id}}</td>
+						<td>{{x.name | uppercase}}</td>
+						<td>{{x.age}}</td>
+						<td>{{x.phone}}</td>
+						<td>{{x.doj | date:shortDate}}</td>
+						<td>{{x.desg}}</td>
+						<td>{{x.photo}}</td>
+					</tr>
+				</tbody>
+			</table>
+
+		</div>
+	</div>
+</body>
+
+</html>
